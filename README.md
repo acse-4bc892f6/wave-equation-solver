@@ -1,8 +1,6 @@
-# Coursework 
+# Solve wave equation in computational grid using MPI
 
-Deadline: 25 February 2022 at 5pm
-
-Initial files - Coursework description and serial code
+This is the submitted version of the individual coursework for the Parallel Programming module in the Applied Computational Science and Engineering course.
 
 ## Instructions to use the parallelized wave equation solver
 
