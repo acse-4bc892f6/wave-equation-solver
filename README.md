@@ -1,6 +1,4 @@
-# Solve wave equation in computational grid using MPI
-
-This is the submitted version of the individual coursework for the Parallel Programming module in the Applied Computational Science and Engineering course.
+# Solve wave equation in parallel using MPI
 
 ## Instructions to use the parallelized wave equation solver
 
