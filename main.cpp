@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Parallel_Wave_Equation.cpp"
 
 int main(int argc, char *argv[])
@@ -29,7 +30,7 @@ int main(int argc, char *argv[])
 	t = 0.0;
 
     /* timestep constraint */
-	dt = 0.1 * min(dx, dy) / c;
+	dt = 0.1 * std::min(dx, dy) / c;
 
 	int out_cnt = 0, it = 0;
 
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
     /* start timing */
 
 #ifdef DO_TIMING
-	auto start = chrono::high_resolution_clock::now();
+	auto start = std::chrono::high_resolution_clock::now();
 #endif
 
     /* solve wave equation until time reaches maximum time step */
@@ -88,12 +89,12 @@ int main(int argc, char *argv[])
     /* stop timing and print out run time */
 
 #ifdef DO_TIMING
-	auto finish = chrono::high_resolution_clock::now();
+	auto finish = std::chrono::high_resolution_clock::now();
 	if (id == 0)
 	{
 		std::chrono::duration<double> elapsed = finish - start;
-		cout << setprecision(5);
-		cout << "The code took " << elapsed.count() << "s to run" << endl;
+		std::cout << std::setprecision(5);
+		std::cout << "The code took " << elapsed.count() << "s to run" << std::endl;
 	}
 #endif
 

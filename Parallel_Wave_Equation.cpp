@@ -1,5 +1,4 @@
 #include <mpi.h>
-#include <iostream>
 #include <iomanip>
 #include <cstdlib>
 #include <chrono>
@@ -9,8 +8,6 @@
 #include <sstream>
 
 #define DO_TIMING
-
-using namespace std;
 
 // total number of processes p, each with unique number id
 int id, p; 
@@ -63,10 +60,10 @@ public:
     double *grid_1d, *new_grid_1d, *old_grid_1d;
 
     // vector storing ids of neighbour blocks
-    vector<int> neighbour_ids;
+    std::vector<int> neighbour_ids;
 
     // vector storing ids of stencil blocks
-    vector<int> stencil_ids;
+    std::vector<int> stencil_ids;
 
     void buildMPITypes();
 
@@ -89,10 +86,10 @@ public:
 // build mpi datatypes to send and receive appropriate data between stencils without the need of copying data
 void Wave::buildMPITypes()
 {
-    vector<int> block_lengths;
-	vector<MPI_Aint> displacements;
+    std::vector<int> block_lengths;
+	std::vector<MPI_Aint> displacements;
 	MPI_Aint add_start;
-	vector<MPI_Datatype> typelist;
+	std::vector<MPI_Datatype> typelist;
 
     // send to block to the left of current block - send first column
     MPI_Get_address(&grid[1][1], &add_start);
@@ -385,26 +382,23 @@ void Wave::grid_to_file()
     // store filename in a specific format: output_id_timestep.txt
 
     /* adapted from https://stackoverflow.com/questions/29200635/convert-float-to-string-with-precision-number-of-decimal-digits-specified */
-    stringstream stream;
-    stream << fixed << setprecision(2) << t; // for time step store two decimal places in file name
-    string t_str = stream.str();
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << t; // for time step store two decimal places in file name
+    std::string t_str = stream.str();
     
-    string fname = "output_" + to_string(id) + "_" + t_str + ".txt";
+    std::string fname = "output_" + std::to_string(id) + "_" + t_str + ".txt";
 
-    fstream data_out;
+    std::fstream data_out;
 
-    data_out.open(fname, fstream::out | fstream::app);
+    data_out.open(fname, std::fstream::out | std::fstream::app);
     if (data_out.fail())
-    {
-        cerr << "Cannot open file to write grid data" << endl;
-        exit(1);
-    }
+        throw std::runtime_error("Failed to open file to write grid data");
 
     for (int i = 1; i < block_i + 1; i++)
     {
         for (int j = 1; j < block_j + 1; j++)
             data_out << grid[i][j] << " ";
-        data_out << endl;
+        data_out << std::endl;
     }
     data_out.close();
 }
@@ -414,17 +408,14 @@ void Wave::parameters_to_file()
 {
     MPI_File mpi_file;
     
-    string fname = "parameters.txt";
+    std::string fname = "parameters.txt";
 
     if (MPI_File_open(MPI_COMM_WORLD, fname.c_str(), MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &mpi_file) != MPI_SUCCESS)
-	{
-	    cerr << "Error opening file to write parameters" << endl;
-	    exit(0);
-	}
+	    throw std::runtime_error("Error opening file to write parameters");
 
-    string out_str;
+    std::string out_str;
 
-    out_str = to_string(i_start) + "\t" + to_string(i_end) + "\t" + to_string(j_start) + "\t" + to_string(j_end);
+    out_str = std::to_string(i_start) + "\t" + std::to_string(i_end) + "\t" + std::to_string(j_start) + "\t" + std::to_string(j_end);
     out_str += "\n";
 
     MPI_File_write_ordered(mpi_file, out_str.c_str(), out_str.size(), MPI_BYTE, MPI_STATUS_IGNORE);
@@ -436,18 +427,15 @@ void Wave::domain_to_file()
 {
     if (id == 0)
     {
-        string fname = "domain.txt";
+        std::string fname = "domain.txt";
 
-        fstream data_out;
+        std::fstream data_out;
 
-        data_out.open(fname, fstream::out | fstream::app);
+        data_out.open(fname, std::fstream::out | std::fstream::app);
         if (data_out.fail())
-        {
-            cerr << "Cannot open file to write grid data" << endl;
-            exit(1);
-        }
+            throw std::runtime_error("Cannot open file to write grid data");
 
-        data_out << imax << "\t" << jmax << "\t" << y_max << "\t" << x_max << "\t" << c << "\t" << p << "\t" << dt_out << "\t" << t_max << "\t" << dt << endl;
+        data_out << imax << "\t" << jmax << "\t" << y_max << "\t" << x_max << "\t" << c << "\t" << p << "\t" << dt_out << "\t" << t_max << "\t" << dt << std::endl;
         data_out.close();
     }
 }
@@ -677,8 +665,8 @@ void Wave::do_iteration()
     t += dt;
 
     // current grid becomes old grid, new grid becomes current grid
-    swap(old_grid, new_grid);
-    swap(old_grid, grid);
-    swap(old_grid_1d, new_grid_1d);
-    swap(old_grid_1d, grid_1d);
+    std::swap(old_grid, new_grid);
+    std::swap(old_grid, grid);
+    std::swap(old_grid_1d, new_grid_1d);
+    std::swap(old_grid_1d, grid_1d);
 }
