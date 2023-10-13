@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 
     if (id == 0)
     {
-        system("mkdir output");
+        system("mkdir -p output");
         system("mv *.txt ./output/");
     }
 
