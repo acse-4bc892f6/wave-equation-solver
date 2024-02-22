@@ -4,9 +4,11 @@
 
 Number of grids in domain, domain dimension, maximum time step, frequency of writing grid data to files, boundary conditions and wave propagation speed can be customised at the beginning of `Parallel_Wave_Equation.cpp`.
 
-Execute the solver by compiling `main.cpp` and running its executable:
+To compile the solver, create and navigate to a build directory, then run the CMake commands:
+```cmake ../```
+```cmake --build .```
 
-```mpicxx -o exe_file main.cpp```
+To run the solver:
 
 ```mpiexec -np num_process ./exe_file```
 
